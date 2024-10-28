@@ -2,10 +2,8 @@ package com.example.movieapp
 
 import android.util.Log
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
@@ -22,10 +20,9 @@ import androidx.compose.ui.text.font.FontWeight.Companion.Bold
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.navigation.NavController
 
 @Composable
-fun LoginScreen(navController: NavController){
+fun SignupScreen(){
 
     var email by remember{
         mutableStateOf("")
@@ -42,9 +39,9 @@ fun LoginScreen(navController: NavController){
     ){
         Image(painter = painterResource(id = R.drawable.login_image), contentDescription = "Login Image",
             modifier = Modifier.size(250.dp))
-        Text(text = "Welcome back", fontSize = 28.sp, fontWeight = Bold)
+        Text(text = "Welcome", fontSize = 28.sp, fontWeight = Bold)
         Spacer(modifier = Modifier.height(4.dp))
-        Text(text="Login to your account")
+        Text(text="Create a new account")
         Spacer(modifier = Modifier.height(16.dp))
         OutlinedTextField(value = email, onValueChange = {
             email = it
@@ -55,21 +52,8 @@ fun LoginScreen(navController: NavController){
         }, label = {Text(text="Password")}, visualTransformation = PasswordVisualTransformation())
         Spacer(modifier = Modifier.height(16.dp))
         Button(onClick={Log.i("Credential", "Email: $email Password: $password")}){
-            Text(text="Login")
+            Text(text="Signup")
         }
         Spacer(modifier = Modifier.height(32.dp))
-        Row {
-            Text(text="Forgot password?", modifier = Modifier.clickable{})
-            Text(text = " / ")
-            Text(text="sign Up", modifier = Modifier.clickable{
-                navigateToSignUp(navController)
-            })
-        }
     }
 }
-
-//Function to navigate to Signup screen
-fun navigateToSignUp(navController: NavController) {
-    navController.navigate(Routes.signup)
-}
-
