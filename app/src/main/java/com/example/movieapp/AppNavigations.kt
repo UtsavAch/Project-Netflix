@@ -13,7 +13,7 @@ fun AppNavigations(){
             LoginScreen(navController)
         }
         composable(Routes.signup){
-            SignupScreen()
+            SignupScreen(navController)
         }
     } )
 }
