@@ -54,7 +54,10 @@ fun LoginScreen(navController: NavController){
             password = it
         }, label = {Text(text="Password")}, visualTransformation = PasswordVisualTransformation())
         Spacer(modifier = Modifier.height(16.dp))
-        Button(onClick={Log.i("Credential", "Email: $email Password: $password")}){
+        Button(onClick={
+            Log.i("Credential", "Email: $email Password: $password")
+            navigateToHome(navController)
+        }){
             Text(text="Login")
         }
         Spacer(modifier = Modifier.height(32.dp))
@@ -71,5 +74,10 @@ fun LoginScreen(navController: NavController){
 //Function to navigate to Signup screen
 fun navigateToSignUp(navController: NavController) {
     navController.navigate(Routes.signup)
+}
+
+//Function to navigate to Signup screen
+fun navigateToHome(navController: NavController) {
+    navController.navigate(Routes.home)
 }
 
