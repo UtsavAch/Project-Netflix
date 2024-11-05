@@ -14,6 +14,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.navigation.NavController
 
 @Composable
 fun BottomIconButton(
@@ -32,7 +33,7 @@ fun BottomIconButton(
 }
 
 @Composable
-fun BottomNavigationBar() {
+fun BottomNavigationBar(navController: NavController) {
     Row(
         modifier = Modifier.fillMaxWidth(),
         horizontalArrangement = androidx.compose.foundation.layout.Arrangement.SpaceEvenly
@@ -40,19 +41,19 @@ fun BottomNavigationBar() {
         BottomIconButton(
             icon = Icons.Filled.Home,
             contentDescription = "Home",
-            onClick = { /* Navigate to Home- It will be default */ }
+            onClick = { navigateToHome(navController) }
         )
 
         BottomIconButton(
             icon = Icons.Filled.Star,
             contentDescription = "Trending",
-            onClick = { /* Navigate to Trending section */ }
+            onClick = { navigateToTrending(navController) }
         )
 
         BottomIconButton(
             icon = Icons.Filled.Person,
             contentDescription = "Profile",
-            onClick = { /* Navigate to Profile */ }
+            onClick = { navigateToProfile(navController) }
         )
     }
 }

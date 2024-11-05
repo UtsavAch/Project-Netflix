@@ -71,13 +71,3 @@ fun LoginScreen(navController: NavController){
     }
 }
 
-//Function to navigate to Signup screen
-fun navigateToSignUp(navController: NavController) {
-    navController.navigate(Routes.signup)
-}
-
-//Function to navigate to Signup screen
-fun navigateToHome(navController: NavController) {
-    navController.navigate(Routes.home)
-}
-

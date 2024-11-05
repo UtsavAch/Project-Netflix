@@ -15,9 +15,14 @@ fun AppNavigations(){
         composable(Routes.signup){
             SignupScreen(navController)
         }
-
         composable(Routes.home){
             HomeScreen(navController)
+        }
+        composable(Routes.trending){
+            TrendingScreen(navController)
+        }
+        composable(Routes.profile){
+            ProfileScreen(navController)
         }
     } )
 }
