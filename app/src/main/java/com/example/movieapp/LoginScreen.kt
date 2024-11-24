@@ -40,19 +40,33 @@ fun LoginScreen(navController: NavController){
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally,
     ){
-        Image(painter = painterResource(id = R.drawable.login_image), contentDescription = "Login Image",
-            modifier = Modifier.size(250.dp))
-        Text(text = "Welcome back", fontSize = 28.sp, fontWeight = Bold)
+        Image(
+            painter = painterResource(id = R.drawable.login_image),
+            contentDescription = "Login Image",
+            modifier = Modifier.size(250.dp)
+        )
+        Text(
+            text = "Welcome back",
+            fontSize = 28.sp,
+            fontWeight = Bold
+        )
         Spacer(modifier = Modifier.height(4.dp))
         Text(text="Login to your account")
         Spacer(modifier = Modifier.height(16.dp))
-        OutlinedTextField(value = email, onValueChange = {
-            email = it
-        }, label = {Text(text="Email address")})
+        OutlinedTextField(
+            value = email,
+            onValueChange = {
+                email = it
+            },
+            label = {Text(text="Email address")})
         Spacer(modifier = Modifier.height(4.dp))
-        OutlinedTextField(value = password, onValueChange = {
-            password = it
-        }, label = {Text(text="Password")}, visualTransformation = PasswordVisualTransformation())
+        OutlinedTextField(
+            value = password,
+            onValueChange = {
+                password = it
+            },
+            label = {Text(text="Password")},
+            visualTransformation = PasswordVisualTransformation())
         Spacer(modifier = Modifier.height(16.dp))
         Button(onClick={
             Log.i("Credential", "Email: $email Password: $password")
