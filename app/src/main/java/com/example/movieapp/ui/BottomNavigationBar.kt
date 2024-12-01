@@ -1,4 +1,4 @@
-package com.example.movieapp
+package com.example.movieapp.ui
 
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -14,7 +14,9 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.res.stringResource
 import androidx.navigation.NavController
+import com.example.movieapp.R
 
 @Composable
 fun BottomIconButton(
@@ -40,19 +42,19 @@ fun BottomNavigationBar(navController: NavController) {
     ) {
         BottomIconButton(
             icon = Icons.Filled.Home,
-            contentDescription = "Home",
+            contentDescription = stringResource(R.string.home),
             onClick = { navigateToHome(navController) }
         )
 
         BottomIconButton(
             icon = Icons.Filled.Star,
-            contentDescription = "Trending",
+            contentDescription = stringResource(R.string.trending),
             onClick = { navigateToTrending(navController) }
         )
 
         BottomIconButton(
             icon = Icons.Filled.Person,
-            contentDescription = "Profile",
+            contentDescription = stringResource(R.string.profile),
             onClick = { navigateToProfile(navController) }
         )
     }

@@ -1,4 +1,4 @@
-package com.example.movieapp
+package com.example.movieapp.data
 
 object Routes {
     var login = "login-screen"

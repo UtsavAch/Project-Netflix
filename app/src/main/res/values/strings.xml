@@ -1,3 +1,22 @@
 <resources>
     <string name="app_name">MovieApp</string>
+    <string name="login_image">Login Image</string>
+    <string name="welcome_back">Welcome back</string>
+    <string name="login_to_your_account">Login to your account</string>
+    <string name="email_address">Email address</string>
+    <string name="password">Password</string>
+    <string name="login">Login</string>
+    <string name="forgot_password">Forgot password?</string>
+    <string name="sign_up">sign Up</string>
+    <string name="bar">" / "</string>
+    <string name="home_screen">Home Screen</string>
+    <string name="home">Home</string>
+    <string name="trending">Trending</string>
+    <string name="profile">Profile</string>
+    <string name="welcome">Welcome</string>
+    <string name="create_a_new_account">Create a new account</string>
+    <string name="username">Username</string>
+    <string name="confirm_password">Confirm Password</string>
+    <string name="signup">Signup</string>
+    <string name="already_have_an_account">Already have an account?</string>
 </resources>

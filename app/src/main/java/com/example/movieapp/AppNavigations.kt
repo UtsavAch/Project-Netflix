@@ -11,6 +11,12 @@ import androidx.compose.ui.Modifier
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import com.example.movieapp.data.Routes
+import com.example.movieapp.ui.HomeScreen
+import com.example.movieapp.ui.LoginScreen
+import com.example.movieapp.ui.ProfileScreen
+import com.example.movieapp.ui.SignupScreen
+import com.example.movieapp.ui.TrendingScreen
 
 @Composable
 fun AppNavigations() {

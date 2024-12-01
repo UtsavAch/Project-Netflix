@@ -1,6 +1,7 @@
-package com.example.movieapp
+package com.example.movieapp.ui
 
 import androidx.navigation.NavController
+import com.example.movieapp.data.Routes
 
 fun navigateToSignUp(navController: NavController) {
     navController.navigate(Routes.signup)
