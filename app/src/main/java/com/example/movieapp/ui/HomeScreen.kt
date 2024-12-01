@@ -30,7 +30,7 @@ fun HomeScreen(navController: NavController) {
         )
 
         Spacer(modifier = Modifier.weight(1f))
-        BottomNavigationBar(navController)
+        BottomNavigationBar(navController, modifier = Modifier)
     }
 }
 

@@ -9,6 +9,7 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.material3.Button
 import androidx.compose.material3.OutlinedTextField
@@ -31,7 +32,7 @@ import com.example.movieapp.ui.theme.AppTheme
 
 @Composable
 fun LoginScreen(
-    navController: NavController
+    navController: NavController,
 ){
 
     var email by remember{

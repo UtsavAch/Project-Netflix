@@ -19,4 +19,11 @@
     <string name="confirm_password">Confirm Password</string>
     <string name="signup">Signup</string>
     <string name="already_have_an_account">Already have an account?</string>
+    <string name="profile_screen">Profile Screen</string>
+    <string name="logout">Logout</string>
+    <string name="change_password">Change Password</string>
+    <string name="current_password">Current Password</string>
+    <string name="new_password">New Password</string>
+    <string name="confirm_new_password">Confirm New Password</string>
+    <string name="cancel">Cancel</string>
 </resources>
