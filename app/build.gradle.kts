@@ -59,11 +59,14 @@ dependencies {
     debugImplementation(libs.androidx.ui.tooling)
     debugImplementation(libs.androidx.ui.test.manifest)
 
+    // Navigation Component
     val nav_version = "2.8.3"
     implementation("androidx.navigation:navigation-compose:$nav_version")
 
+    // Room dependencies
     val room_version = "2.6.1"
     implementation("androidx.room:room-runtime:$room_version")
-    ksp("androidx.room:room-compiler:$room_version")
-    annotationProcessor("androidx.room:room-compiler:$room_version")
+    implementation("androidx.room:room-ktx:$room_version") // for corrotinas
+    ksp("androidx.room:room-compiler:$room_version") // code generation with KSP
 }
+

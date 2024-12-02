@@ -9,7 +9,6 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.material3.Button
 import androidx.compose.material3.OutlinedTextField
@@ -25,23 +24,23 @@ import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.example.movieapp.R
+import com.example.movieapp.viewmodel.UserViewModel
 import com.example.movieapp.ui.theme.AppTheme
 
 @Composable
 fun LoginScreen(
     navController: NavController,
+    viewModel: UserViewModel
 ){
 
-    var email by remember{
-        mutableStateOf("")
-    }
-
-    var password by remember{
-        mutableStateOf("")
-    }
+    var email by remember { mutableStateOf("") }
+    var password by remember { mutableStateOf("") }
+    var errorMessage by remember { mutableStateOf("") }
 
     Column(
         modifier = Modifier.fillMaxSize(),
@@ -81,7 +80,11 @@ fun LoginScreen(
         Spacer(modifier = Modifier.height(16.dp))
         Button(onClick={
             Log.i("Credential", "Email: $email Password: $password")
-            navigateToHome(navController)
+            viewModel.login(email, password, onSuccess = { user ->
+                navigateToHome(navController)
+            }, onFailure = {
+                errorMessage = "Login failed. Check your credentials."
+            })
         }){
             Text(text= stringResource(R.string.login))
         }
@@ -93,6 +96,9 @@ fun LoginScreen(
                 navigateToSignUp(navController)
             })
         }
+        if (errorMessage.isNotEmpty()) {
+            Text(text = errorMessage)
+        }
     }
 }
 
@@ -100,6 +106,6 @@ fun LoginScreen(
 @Composable
 fun LoginPreview(){
     AppTheme {
-        LoginScreen(rememberNavController())
+        LoginScreen(rememberNavController(), viewModel())
     }
 }
