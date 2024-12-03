@@ -14,32 +14,41 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.text.input.PasswordVisualTransformation
+import androidx.compose.ui.unit.sp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.example.movieapp.R
 import com.example.movieapp.ui.theme.AppTheme
+import com.example.movieapp.viewmodel.UserViewModel
 
 @Composable
-fun ProfileScreen(navController: NavController, modifier: Modifier) {
+fun ProfileScreen(navController: NavController, modifier: Modifier, viewModel: UserViewModel) {
     var showDialog by remember { mutableStateOf(false) }
     var currentPassword by remember { mutableStateOf("") }
     var newPassword by remember { mutableStateOf("") }
     var confirmPassword by remember { mutableStateOf("") }
 
-
+    Column(
+        modifier = modifier.fillMaxSize(),
+        verticalArrangement = Arrangement.SpaceBetween,
+        horizontalAlignment = Alignment.CenterHorizontally,
+        ) {
         Column(
-            modifier = modifier.fillMaxSize(),
+            modifier = modifier
+                .weight(1f),
             verticalArrangement = Arrangement.Center,
             horizontalAlignment = Alignment.CenterHorizontally,
         ) {
             Text(
                 text = stringResource(R.string.profile_screen),
                 fontWeight = FontWeight.Bold,
+                fontSize = 24.sp
             )
-
+            Spacer(modifier = Modifier.height(100.dp))
             Button(
                 onClick = { showDialog = true },
-                modifier = modifier.padding(top = 16.dp)
+                modifier = modifier.padding(16.dp)
             ) {
                 Text(text = stringResource(R.string.change_password))
             }
@@ -47,10 +56,12 @@ fun ProfileScreen(navController: NavController, modifier: Modifier) {
             Button(onClick = { navigateToLogin(navController) }) {
                 Text(text = stringResource(R.string.logout))
             }
+        }
 
-            Spacer(modifier = modifier.weight(1f))
+        Spacer(modifier = modifier.weight(1f))
 
-            BottomNavigationBar(navController, modifier)
+        BottomNavigationBar(navController, modifier)
+
         }
 
         if (showDialog) {
@@ -92,6 +103,7 @@ fun ProfileScreen(navController: NavController, modifier: Modifier) {
                     Button(
                         onClick = {
                             if (newPassword == confirmPassword) {
+                                viewModel.updatePassword("email@example.com", newPassword) // currently the passwords do not change need to see what to do in database
                                 Toast.makeText(navController.context, "Password Changed Successfully", Toast.LENGTH_SHORT).show()
                                 showDialog = false
                             } else {
@@ -116,6 +128,6 @@ fun ProfileScreen(navController: NavController, modifier: Modifier) {
 @Composable
 fun ProfilePreview() {
     AppTheme {
-        ProfileScreen(rememberNavController(), modifier = Modifier)
+        ProfileScreen(rememberNavController(), modifier = Modifier, viewModel())
     }
 }
