@@ -9,7 +9,9 @@ fun navigateToSignUp(navController: NavController) {
 
 //Function to navigate to Login screen
 fun navigateToLogin(navController: NavController) {
-    navController.navigate(Routes.login)
+    navController.navigate(Routes.login){
+        popUpTo(0) // removes all screens, for example in logout
+    }
 }
 
 // Function to navigate to the Home screen

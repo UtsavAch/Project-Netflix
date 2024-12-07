@@ -53,7 +53,10 @@ fun ProfileScreen(navController: NavController, modifier: Modifier, viewModel: U
                 Text(text = stringResource(R.string.change_password))
             }
 
-            Button(onClick = { navigateToLogin(navController) }) {
+            Button(onClick = {
+                navigateToLogin(navController)
+
+            }) {
                 Text(text = stringResource(R.string.logout))
             }
         }
