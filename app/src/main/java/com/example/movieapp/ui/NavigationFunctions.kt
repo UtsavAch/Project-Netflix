@@ -10,7 +10,7 @@ fun navigateToSignUp(navController: NavController) {
 //Function to navigate to Login screen
 fun navigateToLogin(navController: NavController) {
     navController.navigate(Routes.login){
-        popUpTo(0) // removes all screens, for example in logout
+        popUpTo(navController.graph.startDestinationId) { inclusive = true } // remove all screen from before
     }
 }
 

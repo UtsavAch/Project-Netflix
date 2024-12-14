@@ -3,10 +3,12 @@ package com.example.movieapp
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import androidx.navigation.NavController
 import com.example.movieapp.api.ApiService
 import com.example.movieapp.api.RetrofitInstance
 import com.example.movieapp.data.Video
 import com.example.movieapp.data.User
+import com.example.movieapp.ui.navigateToLogin
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
@@ -20,8 +22,22 @@ class AppViewModel : ViewModel() {
     private val _userList = MutableStateFlow<List<User>>(emptyList())
     private val _videoList = MutableStateFlow<List<Video>>(emptyList())
 
+    private val _currentUserEmail = MutableStateFlow<String?>(null)
+    val currentUserEmail: StateFlow<String?> = _currentUserEmail
+
+    fun setCurrentUserEmail(email: String) {
+        _currentUserEmail.value = email
+    }
+
+    fun clearCurrentUserEmail() {
+        _currentUserEmail.value = null
+    }
+
+
     val userList: StateFlow<List<User>> = _userList
     val videoList: StateFlow<List<Video>> = _videoList
+
+    val user: User? = null
 
     // Simulate a backend data source
     //private val users = mutableListOf<User>()
@@ -77,6 +93,32 @@ class AppViewModel : ViewModel() {
         })
     }*/
 
+    fun logout(email: String, onSuccess: () -> Unit, onFailure: (String) -> Unit, navController: NavController){
+        val apiService = RetrofitInstance.retrofit.create(ApiService::class.java)
+        Log.d("AppViewModel",email)
+        apiService.logout(email).enqueue(object : Callback<ResponseBody> {
+            override fun onResponse(call: Call<ResponseBody>, response: Response<ResponseBody>) {
+                if (response.isSuccessful && response.body() != null) {
+                    Log.d("AppViewModel", "Message: ${response.body()?.string()}")
+                    clearCurrentUserEmail()
+                    navigateToLogin(navController)
+                    onSuccess()
+                } else {
+                    val error = response.errorBody()?.string() ?: "Failed"
+                    Log.e("AppViewModel", "Failed logout: $error")
+                    onFailure(error)
+                }
+            }
+
+            override fun onFailure(call: Call<ResponseBody>, t: Throwable) {
+                val errorMessage = t.message ?: "An unexpected error occurred"
+                Log.e("AppViewModel", "Error to login: $errorMessage")
+                onFailure(errorMessage)
+            }
+        })
+    }
+
+
     fun login(email: String, password: String, onSuccess: () -> Unit, onFailure: (String) -> Unit) {
         val apiService = RetrofitInstance.retrofit.create(ApiService::class.java)
 
@@ -84,6 +126,7 @@ class AppViewModel : ViewModel() {
             override fun onResponse(call: Call<ResponseBody>, response: Response<ResponseBody>) {
                 if (response.isSuccessful && response.body() != null) {
                     Log.d("AppViewModel", "Message: ${response.body()?.string()}")
+                    setCurrentUserEmail(email)
                     onSuccess()
                 } else {
                     val error = response.errorBody()?.string() ?: "Invalid credentials"
@@ -133,13 +176,16 @@ class AppViewModel : ViewModel() {
                     //loadUsers()
                     onSuccess()
                 } else {
+                    val error = response.errorBody()?.string() ?: "Invalid credentials"
                     Log.e("AppViewModel", "Failed add user: ${response.errorBody()?.string()}")
-                    onFailure("Failed to add user")
+                    onFailure(error)
                 }
             }
 
             override fun onFailure(call: Call<ResponseBody>, t: Throwable) {
-                Log.e("AppViewModel", "Error adding user: ${t.message}")
+                val errorMessage = t.message ?: "An unexpected error occurred"
+                Log.e("AppViewModel", "Error adding user: $errorMessage")
+                onFailure(errorMessage)
             }
         })
     }

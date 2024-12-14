@@ -1,5 +1,6 @@
 package com.example.movieapp.ui
 
+import android.util.Log
 import android.widget.Toast
 import androidx.compose.foundation.layout.*
 import androidx.compose.material3.Button
@@ -28,7 +29,7 @@ fun ProfileScreen(navController: NavController, modifier: Modifier, viewModel: A
     var currentPassword by remember { mutableStateOf("") }
     var newPassword by remember { mutableStateOf("") }
     var confirmPassword by remember { mutableStateOf("") }
-
+    val currentUserEmail by viewModel.currentUserEmail.collectAsState()
     Column(
         modifier = modifier.fillMaxSize(),
         verticalArrangement = Arrangement.SpaceBetween,
@@ -54,8 +55,16 @@ fun ProfileScreen(navController: NavController, modifier: Modifier, viewModel: A
             }
 
             Button(onClick = {
-                navigateToLogin(navController)
-
+                viewModel.logout(
+                    email = currentUserEmail!!,
+                    navController = navController,
+                    onSuccess = {
+                        Log.d("HomeScreen", "Logout.")
+                    },
+                    onFailure = { error ->
+                        Log.e("HomeScreen", "Erro in logout: $error")
+                    }
+                )
             }) {
                 Text(text = stringResource(R.string.logout))
             }

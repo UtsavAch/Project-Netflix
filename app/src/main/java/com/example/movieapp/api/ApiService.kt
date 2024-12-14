@@ -8,6 +8,9 @@ import retrofit2.http.*
 
 interface ApiService {
 
+    @POST("users/logout")
+    fun logout(@Query("email") email: String): Call<ResponseBody>
+
     // Get a user by ID
     @GET("users/{id}")
     fun getUser(@Path("id") userId: String): Call<User>
