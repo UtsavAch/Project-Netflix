@@ -19,14 +19,14 @@ import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
+import com.example.movieapp.AppViewModel
 import com.example.movieapp.R
 import com.example.movieapp.ui.theme.AppTheme
-import com.example.movieapp.viewmodel.UserViewModel
 
 @Composable
 fun SignupScreen(
     navController: NavController,
-    viewModel: UserViewModel
+    viewModel: AppViewModel
 ) {
     var username by remember { mutableStateOf("") }
     var email by remember { mutableStateOf("") }

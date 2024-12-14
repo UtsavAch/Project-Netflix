@@ -18,12 +18,12 @@ import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
+import com.example.movieapp.AppViewModel
 import com.example.movieapp.R
 import com.example.movieapp.ui.theme.AppTheme
-import com.example.movieapp.viewmodel.UserViewModel
 
 @Composable
-fun ProfileScreen(navController: NavController, modifier: Modifier, viewModel: UserViewModel) {
+fun ProfileScreen(navController: NavController, modifier: Modifier, viewModel: AppViewModel) {
     var showDialog by remember { mutableStateOf(false) }
     var currentPassword by remember { mutableStateOf("") }
     var newPassword by remember { mutableStateOf("") }

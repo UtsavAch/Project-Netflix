@@ -21,12 +21,11 @@ import com.example.movieapp.ui.LoginScreen
 import com.example.movieapp.ui.ProfileScreen
 import com.example.movieapp.ui.SignupScreen
 import com.example.movieapp.ui.TrendingScreen
-import com.example.movieapp.viewmodel.UserViewModel
 
 @Composable
 fun AppNavigations() {
     val navController = rememberNavController()
-    val viewModel: UserViewModel = viewModel()
+    val viewModel: AppViewModel = viewModel()
     Box(
         modifier = Modifier
             .fillMaxSize()

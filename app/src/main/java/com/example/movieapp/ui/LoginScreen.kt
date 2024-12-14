@@ -28,14 +28,14 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
+import com.example.movieapp.AppViewModel
 import com.example.movieapp.R
-import com.example.movieapp.viewmodel.UserViewModel
 import com.example.movieapp.ui.theme.AppTheme
 
 @Composable
 fun LoginScreen(
     navController: NavController,
-    viewModel: UserViewModel
+    viewModel: AppViewModel
 ){
 
     var email by remember { mutableStateOf("") }
