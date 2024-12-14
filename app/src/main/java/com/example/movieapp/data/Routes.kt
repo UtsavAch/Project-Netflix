@@ -6,4 +6,5 @@ object Routes {
     var home = "home-screen"
     var trending = "trending-screen"
     var profile = "profile-screen"
+    var video = "video/{videoId}"
 }

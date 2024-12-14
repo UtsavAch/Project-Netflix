@@ -28,3 +28,7 @@ fun navigateToTrending(navController: NavController) {
 fun navigateToProfile(navController: NavController) {
     navController.navigate(Routes.profile)
 }
+
+fun navigateToVideo(navController: NavController, videoId: Int) {
+    navController.navigate("video/$videoId")
+}

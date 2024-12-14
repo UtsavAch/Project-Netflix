@@ -91,6 +91,11 @@ class AppViewModel : ViewModel() {
         })
     }*/
 
+
+    fun getVideoById(id: Int): Video? {
+        return videoList.value.find{ it.id == id}
+    }
+
     fun logout(email: String, onSuccess: () -> Unit, onFailure: (String) -> Unit, navController: NavController){
         val apiService = RetrofitInstance.retrofit.create(ApiService::class.java)
         Log.d("AppViewModel",email)
