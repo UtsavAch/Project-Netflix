@@ -10,6 +10,7 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.Button
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
@@ -20,6 +21,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight.Companion.Bold
+import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -67,7 +69,8 @@ fun LoginScreen(
             },
             label = {
                 Text(text= stringResource(R.string.email_address))
-            }
+            },
+            keyboardOptions = KeyboardOptions.Default.copy(imeAction = ImeAction.Next)
         )
         Spacer(modifier = Modifier.height(4.dp))
         OutlinedTextField(
@@ -76,15 +79,21 @@ fun LoginScreen(
                 password = it
             },
             label = {Text(text= stringResource(R.string.password))},
-            visualTransformation = PasswordVisualTransformation())
+            visualTransformation = PasswordVisualTransformation(),
+            keyboardOptions = KeyboardOptions.Default.copy(imeAction = ImeAction.Done)
+            )
         Spacer(modifier = Modifier.height(16.dp))
         Button(onClick={
             Log.i("Credential", "Email: $email Password: $password")
-            viewModel.login(email, password, onSuccess = { user ->
-                navigateToHome(navController)
-            }, onFailure = {
-                errorMessage = "Login failed. Check your credentials."
-            })
+            viewModel.login(
+                email,
+                password,
+                onSuccess = {
+                    navigateToHome(navController)
+                },
+                onFailure = {error ->
+                    errorMessage = error
+                })
         }){
             Text(text= stringResource(R.string.login))
         }

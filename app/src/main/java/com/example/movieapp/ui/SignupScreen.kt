@@ -1,8 +1,10 @@
 package com.example.movieapp.ui
 
 import android.util.Log
+import android.widget.Toast
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.Button
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
@@ -10,8 +12,10 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight.Companion.Bold
+import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -33,6 +37,7 @@ fun SignupScreen(
     var password by remember { mutableStateOf("") }
     var confirmPassword by remember { mutableStateOf("") }
     var errorMessage by remember { mutableStateOf("") }
+    val context = LocalContext.current
 
     Column(
         modifier = Modifier
@@ -50,7 +55,8 @@ fun SignupScreen(
             value = username,
             onValueChange = { username = it },
             label = { Text(text = stringResource(R.string.username)) },
-            modifier = Modifier.fillMaxWidth()
+            modifier = Modifier.fillMaxWidth(),
+            keyboardOptions = KeyboardOptions.Default.copy(imeAction = ImeAction.Next)
         )
         Spacer(modifier = Modifier.height(4.dp))
 
@@ -58,7 +64,8 @@ fun SignupScreen(
             value = email,
             onValueChange = { email = it },
             label = { Text(text = stringResource(R.string.email_address)) },
-            modifier = Modifier.fillMaxWidth()
+            modifier = Modifier.fillMaxWidth(),
+            keyboardOptions = KeyboardOptions.Default.copy(imeAction = ImeAction.Next)
         )
         Spacer(modifier = Modifier.height(4.dp))
 
@@ -67,7 +74,8 @@ fun SignupScreen(
             onValueChange = { password = it },
             label = { Text(text = stringResource(R.string.password)) },
             visualTransformation = PasswordVisualTransformation(),
-            modifier = Modifier.fillMaxWidth()
+            modifier = Modifier.fillMaxWidth(),
+            keyboardOptions = KeyboardOptions.Default.copy(imeAction = ImeAction.Next)
         )
         Spacer(modifier = Modifier.height(4.dp))
 
@@ -78,7 +86,8 @@ fun SignupScreen(
                 label = { Text(text = stringResource(R.string.confirm_password)) },
                 visualTransformation = PasswordVisualTransformation(),
                 isError = errorMessage.isNotEmpty(),
-                modifier = Modifier.fillMaxWidth()
+                modifier = Modifier.fillMaxWidth(),
+                keyboardOptions = KeyboardOptions.Default.copy(imeAction = ImeAction.Done)
             )
             if (errorMessage.isNotEmpty()) {
                 Text(
@@ -101,13 +110,18 @@ fun SignupScreen(
                         errorMessage = "Passwords do not match"
                     }
                     else -> {
-                        if (viewModel.signUp(username, email, password, confirmPassword)) {
-                            errorMessage = ""
-                            navigateToLogin(navController)
-                            Log.i("Credential", "Sign Up Successful: Email: $email Password: $password")
-                        } else {
-                            errorMessage = "Email is already registered"
-                        }
+                        viewModel.addUser(
+                            username,
+                            email,
+                            password,
+                            onSuccess = {
+                                Toast.makeText(context, "User created successfully!", Toast.LENGTH_SHORT).show()
+                                navigateToLogin(navController)
+                            },
+                            onFailure = { error ->
+                                Toast.makeText(context, error, Toast.LENGTH_SHORT).show()
+                            }
+                        )
                     }
                 }
             },

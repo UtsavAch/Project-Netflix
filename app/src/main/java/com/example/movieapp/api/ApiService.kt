@@ -15,9 +15,15 @@ interface ApiService {
     @GET("users/all")
     fun getAllUsers(): Call<List<User>>
 
+    @POST("users/login")
+    fun loginToApp(
+        @Query("email") email: String,
+        @Query("password") password: String
+    ): Call<ResponseBody>
+
     // Add a new user
     @POST("users")
-    fun addUser(@Body user: User): Call<String>
+    fun addUser(@Body user: User): Call<ResponseBody>
 
     // Delete a user by ID
     @DELETE("users/{id}")

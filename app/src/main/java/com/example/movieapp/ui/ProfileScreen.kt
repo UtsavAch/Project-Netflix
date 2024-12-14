@@ -106,9 +106,9 @@ fun ProfileScreen(navController: NavController, modifier: Modifier, viewModel: A
                     Button(
                         onClick = {
                             if (newPassword == confirmPassword) {
-                                viewModel.updatePassword("email@example.com", newPassword) // currently the passwords do not change need to see what to do in database
+                                /*viewModel.updatePassword("email@example.com", newPassword) // currently the passwords do not change need to see what to do in database
                                 Toast.makeText(navController.context, "Password Changed Successfully", Toast.LENGTH_SHORT).show()
-                                showDialog = false
+                                showDialog = false*/
                             } else {
                                 Toast.makeText(navController.context, "Passwords do not match", Toast.LENGTH_SHORT).show()
                             }

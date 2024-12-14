@@ -25,19 +25,19 @@ class AppViewModel : ViewModel() {
 
     // Simulate a backend data source
     //private val users = mutableListOf<User>()
-    private val videos = mutableListOf<Video>()
+    //private val videos = mutableListOf<Video>()
 
     // Unique ID generators
-    private var nextUserId = 3
-    private var nextVideoId = 3
+    //private var nextUserId = 3
+    //private var nextVideoId = 3
 
     init {
-        loadUsers()
+        //loadUsers()
         loadVideos()
     }
 
     // Fetch user by ID
-    fun fetchUserById(userId: String, onResult: (User?) -> Unit) {
+    /*fun fetchUserById(userId: String, onResult: (User?) -> Unit) {
         val apiService = RetrofitInstance.retrofit.create(ApiService::class.java)
         val call = apiService.getUser(userId)
         call.enqueue(object : Callback<User> {
@@ -55,9 +55,9 @@ class AppViewModel : ViewModel() {
                 onResult(null)
             }
         })
-    }
+    }*/
 
-    private fun loadUsers() {
+    /*private fun loadUsers() {
         val apiService = RetrofitInstance.retrofit.create(ApiService::class.java)
 
         apiService.getAllUsers().enqueue(object : Callback<List<User>> {
@@ -73,6 +73,29 @@ class AppViewModel : ViewModel() {
 
             override fun onFailure(call: Call<List<User>>, t: Throwable) {
                 Log.e("AppViewModel", "Error fetching users: ${t.message}")
+            }
+        })
+    }*/
+
+    fun login(email: String, password: String, onSuccess: () -> Unit, onFailure: (String) -> Unit) {
+        val apiService = RetrofitInstance.retrofit.create(ApiService::class.java)
+
+        apiService.loginToApp(email, password).enqueue(object : Callback<ResponseBody> {
+            override fun onResponse(call: Call<ResponseBody>, response: Response<ResponseBody>) {
+                if (response.isSuccessful && response.body() != null) {
+                    Log.d("AppViewModel", "Message: ${response.body()?.string()}")
+                    onSuccess()
+                } else {
+                    val error = response.errorBody()?.string() ?: "Invalid credentials"
+                    Log.e("AppViewModel", "Failed to login: $error")
+                    onFailure(error)
+                }
+            }
+
+            override fun onFailure(call: Call<ResponseBody>, t: Throwable) {
+                val errorMessage = t.message ?: "An unexpected error occurred"
+                Log.e("AppViewModel", "Error to login: $errorMessage")
+                onFailure(errorMessage)
             }
         })
     }
@@ -102,12 +125,12 @@ class AppViewModel : ViewModel() {
         val apiService = RetrofitInstance.retrofit.create(ApiService::class.java)
         val newUser = User(0, name, email, password, "user", 0)
 
-        apiService.addUser(newUser).enqueue(object : Callback<String> {
-            override fun onResponse(call: Call<String>, response: Response<String>) {
+        apiService.addUser(newUser).enqueue(object : Callback<ResponseBody> {
+            override fun onResponse(call: Call<ResponseBody>, response: Response<ResponseBody>) {
                 if (response.isSuccessful && response.body() != null) {
                     val message = response.body()!! // not null type
                     Log.d("AppViewModel", "Message: $message")
-                    loadUsers()
+                    //loadUsers()
                     onSuccess()
                 } else {
                     Log.e("AppViewModel", "Failed add user: ${response.errorBody()?.string()}")
@@ -115,7 +138,7 @@ class AppViewModel : ViewModel() {
                 }
             }
 
-            override fun onFailure(call: Call<String>, t: Throwable) {
+            override fun onFailure(call: Call<ResponseBody>, t: Throwable) {
                 Log.e("AppViewModel", "Error adding user: ${t.message}")
             }
         })
@@ -143,7 +166,7 @@ class AppViewModel : ViewModel() {
         })
     }
 
-    fun addVideo(name: String, genre: String) {
+    /*fun addVideo(name: String, genre: String) {
         viewModelScope.launch {
             val newVideo = Video(nextVideoId++, name, genre, "null", "null")
             videos.add(newVideo)
@@ -157,5 +180,5 @@ class AppViewModel : ViewModel() {
             _videoList.value = videos
             Log.d("AppViewModel", "Movies after deletion: ${_videoList.value}") // Log to see the updated list
         }
-    }
+    }*/
 }
