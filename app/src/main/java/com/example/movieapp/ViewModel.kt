@@ -22,22 +22,20 @@ class AppViewModel : ViewModel() {
     private val _userList = MutableStateFlow<List<User>>(emptyList())
     private val _videoList = MutableStateFlow<List<Video>>(emptyList())
 
-    private val _currentUserEmail = MutableStateFlow<String?>(null)
-    val currentUserEmail: StateFlow<String?> = _currentUserEmail
+    private val _user = MutableStateFlow<User?>(null)
+    val user: StateFlow<User?> = _user
 
-    fun setCurrentUserEmail(email: String) {
-        _currentUserEmail.value = email
+    fun setCurrentUser(user: User?) {
+        _user.value = user
     }
 
-    fun clearCurrentUserEmail() {
-        _currentUserEmail.value = null
+    fun clearCurrentUser() {
+        _user.value = null
     }
 
 
     val userList: StateFlow<List<User>> = _userList
     val videoList: StateFlow<List<Video>> = _videoList
-
-    val user: User? = null
 
     // Simulate a backend data source
     //private val users = mutableListOf<User>()
@@ -100,8 +98,8 @@ class AppViewModel : ViewModel() {
             override fun onResponse(call: Call<ResponseBody>, response: Response<ResponseBody>) {
                 if (response.isSuccessful && response.body() != null) {
                     Log.d("AppViewModel", "Message: ${response.body()?.string()}")
-                    clearCurrentUserEmail()
                     navigateToLogin(navController)
+                    clearCurrentUser()
                     onSuccess()
                 } else {
                     val error = response.errorBody()?.string() ?: "Failed"
@@ -122,11 +120,12 @@ class AppViewModel : ViewModel() {
     fun login(email: String, password: String, onSuccess: () -> Unit, onFailure: (String) -> Unit) {
         val apiService = RetrofitInstance.retrofit.create(ApiService::class.java)
 
-        apiService.loginToApp(email, password).enqueue(object : Callback<ResponseBody> {
-            override fun onResponse(call: Call<ResponseBody>, response: Response<ResponseBody>) {
+        apiService.loginToApp(email, password).enqueue(object : Callback<User> {
+            override fun onResponse(call: Call<User>, response: Response<User>) {
                 if (response.isSuccessful && response.body() != null) {
-                    Log.d("AppViewModel", "Message: ${response.body()?.string()}")
-                    setCurrentUserEmail(email)
+                    Log.d("AppViewModel", "Message: ${response.body()}")
+                    val user = response.body()
+                    setCurrentUser(user)
                     onSuccess()
                 } else {
                     val error = response.errorBody()?.string() ?: "Invalid credentials"
@@ -135,7 +134,7 @@ class AppViewModel : ViewModel() {
                 }
             }
 
-            override fun onFailure(call: Call<ResponseBody>, t: Throwable) {
+            override fun onFailure(call: Call<User>, t: Throwable) {
                 val errorMessage = t.message ?: "An unexpected error occurred"
                 Log.e("AppViewModel", "Error to login: $errorMessage")
                 onFailure(errorMessage)

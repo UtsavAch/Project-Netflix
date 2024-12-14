@@ -6,6 +6,7 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.material3.Button
 import androidx.compose.material3.Text
 import androidx.compose.material3.AlertDialog
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -29,7 +30,7 @@ fun ProfileScreen(navController: NavController, modifier: Modifier, viewModel: A
     var currentPassword by remember { mutableStateOf("") }
     var newPassword by remember { mutableStateOf("") }
     var confirmPassword by remember { mutableStateOf("") }
-    val currentUserEmail by viewModel.currentUserEmail.collectAsState()
+    val user by viewModel.user.collectAsState()
     Column(
         modifier = modifier.fillMaxSize(),
         verticalArrangement = Arrangement.SpaceBetween,
@@ -46,6 +47,7 @@ fun ProfileScreen(navController: NavController, modifier: Modifier, viewModel: A
                 fontWeight = FontWeight.Bold,
                 fontSize = 24.sp
             )
+            user?.let { Text(text= it.name, style=MaterialTheme.typography.headlineLarge) }
             Spacer(modifier = Modifier.height(100.dp))
             Button(
                 onClick = { showDialog = true },
@@ -56,7 +58,7 @@ fun ProfileScreen(navController: NavController, modifier: Modifier, viewModel: A
 
             Button(onClick = {
                 viewModel.logout(
-                    email = currentUserEmail!!,
+                    email = user!!.email,
                     navController = navController,
                     onSuccess = {
                         Log.d("HomeScreen", "Logout.")

@@ -22,7 +22,7 @@ interface ApiService {
     fun loginToApp(
         @Query("email") email: String,
         @Query("password") password: String
-    ): Call<ResponseBody>
+    ): Call<User>
 
     // Add a new user
     @POST("users")

@@ -1,10 +1,10 @@
 package com.example.movieapp.data
 
 data class User(
-    val id: Int = 0,
+    val id: Int,
     val name: String,
     val email: String,
     val password: String,
-    val role: String = "user",
-    val loginStatus: Int = 0
+    val role: String,
+    val loginStatus: Int
 )
