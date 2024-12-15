@@ -78,63 +78,76 @@ fun ProfileScreen(navController: NavController, modifier: Modifier, viewModel: A
 
         }
 
-        if (showDialog) {
-            AlertDialog(
-                onDismissRequest = { showDialog = false },
-                title = { Text(text = stringResource(R.string.change_password)) },
-                text = {
-                    Column {
-                        OutlinedTextField(
-                            value = currentPassword,
-                            onValueChange = { currentPassword = it },
-                            label = { Text(stringResource(R.string.current_password)) },
-                            visualTransformation = PasswordVisualTransformation(),
-                            modifier = Modifier.fillMaxWidth()
-                        )
+    if (showDialog) {
+        AlertDialog(
+            onDismissRequest = { showDialog = false },
+            title = { Text(text = stringResource(R.string.change_password)) },
+            text = {
+                Column {
+                    OutlinedTextField(
+                        value = currentPassword,
+                        onValueChange = { currentPassword = it },
+                        label = { Text(stringResource(R.string.current_password)) },
+                        visualTransformation = PasswordVisualTransformation(),
+                        modifier = Modifier.fillMaxWidth()
+                    )
 
-                        Spacer(modifier = Modifier.height(16.dp))
+                    Spacer(modifier = Modifier.height(16.dp))
 
-                        OutlinedTextField(
-                            value = newPassword,
-                            onValueChange = { newPassword = it },
-                            label = { Text(stringResource(R.string.new_password)) },
-                            visualTransformation = PasswordVisualTransformation(),
-                            modifier = Modifier.fillMaxWidth()
-                        )
+                    OutlinedTextField(
+                        value = newPassword,
+                        onValueChange = { newPassword = it },
+                        label = { Text(stringResource(R.string.new_password)) },
+                        visualTransformation = PasswordVisualTransformation(),
+                        modifier = Modifier.fillMaxWidth()
+                    )
 
-                        Spacer(modifier = Modifier.height(16.dp))
+                    Spacer(modifier = Modifier.height(16.dp))
 
-                        OutlinedTextField(
-                            value = confirmPassword,
-                            onValueChange = { confirmPassword = it },
-                            label = { Text(stringResource(R.string.confirm_new_password)) },
-                            visualTransformation = PasswordVisualTransformation(),
-                            modifier = Modifier.fillMaxWidth()
-                        )
-                    }
-                },
-                confirmButton = {
-                    Button(
-                        onClick = {
-                            if (newPassword == confirmPassword) {
-                                /*viewModel.updatePassword("email@example.com", newPassword) // currently the passwords do not change need to see what to do in database
-                                Toast.makeText(navController.context, "Password Changed Successfully", Toast.LENGTH_SHORT).show()
-                                showDialog = false*/
-                            } else {
-                                Toast.makeText(navController.context, "Passwords do not match", Toast.LENGTH_SHORT).show()
-                            }
-                        }
-                    ) {
-                        Text(stringResource(R.string.change_password))
-                    }
-                },
-                dismissButton = {
-                    Button(onClick = { showDialog = false }) {
-                        Text(stringResource(R.string.cancel))
-                    }
+                    OutlinedTextField(
+                        value = confirmPassword,
+                        onValueChange = { confirmPassword = it },
+                        label = { Text(stringResource(R.string.confirm_new_password)) },
+                        visualTransformation = PasswordVisualTransformation(),
+                        modifier = Modifier.fillMaxWidth()
+                    )
                 }
-            )
-        }
+            },
+            confirmButton = {
+                Button(
+                    onClick = {
+                        if (newPassword == confirmPassword) {
+                            user?.let {
+                                viewModel.updatePassword(
+                                    email = it.email,
+                                    oldPassword = currentPassword,
+                                    newPassword = newPassword,
+                                    onSuccess = {
+                                        Toast.makeText(navController.context, "Password Changed Successfully", Toast.LENGTH_SHORT).show()
+                                        showDialog = false
+                                    },
+                                    onFailure = { error ->
+                                        Toast.makeText(navController.context, "Failed to change password: $error", Toast.LENGTH_SHORT).show()
+                                    }
+                                )
+                            } ?: run {
+                                Toast.makeText(navController.context, "User not logged in", Toast.LENGTH_SHORT).show()
+                            }
+                        } else {
+                            Toast.makeText(navController.context, "Passwords do not match", Toast.LENGTH_SHORT).show()
+                        }
+                    }
+                ) {
+                    Text(stringResource(R.string.change_password))
+                }
+            },
+            dismissButton = {
+                Button(onClick = { showDialog = false }) {
+                    Text(stringResource(R.string.cancel))
+                }
+            }
+        )
+    }
 
 }
 

@@ -1,103 +1,159 @@
 package com.example.movieapp.ui
 
-import android.app.Activity
 import android.util.Log
 import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.material3.Card
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Text
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
+import androidx.compose.foundation.horizontalScroll
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
+import androidx.compose.material3.*
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.unit.dp
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.example.movieapp.AppViewModel
 import com.example.movieapp.R
-import com.example.movieapp.data.Video
 import com.example.movieapp.ui.theme.AppTheme
-import androidx.compose.foundation.lazy.items
+import com.example.movieapp.data.Video
 
 @Composable
-fun VideoItem(video: Video, onClick: () -> Unit) {
-    Card(
+fun HomeScreen(navController: NavController, viewModel: AppViewModel) {
+    // Intercepts going back behavior
+    BackHandler {
+        Log.d("HomeScreen", "Button going back HomeScreen.")
+    }
+
+    var searchQuery by remember { mutableStateOf("") }
+
+    // Collect video list from ViewModel
+    val videoList by viewModel.videoList.collectAsState(initial = emptyList())
+
+    // Filter videos based on the search query
+    val filteredVideos = videoList.filter {
+        it.name.contains(searchQuery, ignoreCase = true)
+    }
+
+    // Group videos by genre
+    val videosByGenre = filteredVideos.groupBy { it.genre }
+
+    Column(
         modifier = Modifier
-            .fillMaxWidth()
-            .padding(8.dp)
-            .clickable(onClick = onClick)
+            .fillMaxSize()
+            .padding(25.dp)
+            .verticalScroll(rememberScrollState()), // Added vertical scroll
+        verticalArrangement = Arrangement.SpaceBetween,
+        horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        Column(modifier = Modifier.padding(16.dp)) {
-            Text(text = video.name, style = MaterialTheme.typography.titleMedium)
-            Text(text = "Genre: ${video.genre}", style = MaterialTheme.typography.labelMedium)
+        // Search bar at the top
+        OutlinedTextField(
+            value = searchQuery,
+            onValueChange = { searchQuery = it },
+            label = { Text(text = "Search for a video") },
+            modifier = Modifier.fillMaxWidth(),
+            singleLine = true
+        )
+
+        Spacer(modifier = Modifier.height(20.dp))
+
+        // Display videos by genre
+        if (videoList.isEmpty()) {
+            Text(text = "Loading videos...", style = MaterialTheme.typography.bodyMedium)
+        } else {
+            videosByGenre.forEach { (genre, videos) ->
+                Text(
+                    text = genre,
+                    fontWeight = FontWeight.Bold,
+                    style = MaterialTheme.typography.bodyLarge, // Updated text style
+                    modifier = Modifier.padding(bottom = 8.dp)
+                )
+
+                // Horizontal scrollable row for videos of a specific genre
+                Row(
+                    modifier = Modifier
+                        .horizontalScroll(rememberScrollState())
+                        .fillMaxWidth(),
+                    horizontalArrangement = Arrangement.spacedBy(8.dp)
+                ) {
+                    videos.forEach { video ->
+                        VideoCard(video = video, onClick = {
+                            // Navigate to detailed screen (simulated)
+                            Log.d("HomeScreen", "Navigating to details of: ${video.name}")
+                        })
+                    }
+                }
+
+                Spacer(modifier = Modifier.height(20.dp)) // Add space between genre sections
+            }
         }
+
+        Spacer(modifier = Modifier.weight(1f))
+        BottomNavigationBar(navController, modifier = Modifier)
     }
 }
 
 
+
 @Composable
-fun HomeScreen(
-    navController: NavController,
-    viewModel: AppViewModel
-) {
-    val videos by viewModel.videoList.collectAsState()
-
-    // inteceps ging back behaviour
-    BackHandler {
-        // Suspends nav
-        Log.d("HomeScreen", "Button going back HomeScreen.")
-    }
-
-    LazyColumn(
+fun VideoCard(video: Video, onClick: () -> Unit) {
+    Card(
         modifier = Modifier
-            .fillMaxSize()
-            .padding(25.dp),
-        verticalArrangement = Arrangement.SpaceBetween,
-        horizontalAlignment = Alignment.CenterHorizontally
-        ){
-
-        item {
+            .width(150.dp)
+            .height(250.dp)
+            .clickable { onClick() },
+        colors = CardDefaults.cardColors(containerColor = Color.LightGray)
+    ) {
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(8.dp),
+            verticalArrangement = Arrangement.Center,
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
             Text(
-                text = stringResource(R.string.home_screen),
+                text = video.name,
                 fontWeight = FontWeight.Bold,
-                modifier = Modifier.padding(bottom = 16.dp),
-                style = MaterialTheme.typography.displayLarge
+                modifier = Modifier.padding(bottom = 8.dp)
             )
-        }
+            Text(text = "Genre: ${video.genre}")
+            Text(text = "Duration: ${video.duration / 60}h ${video.duration % 60}m")
 
-        items(videos) { video ->
-            VideoItem(
-                video = video,
-                onClick = {
-                    navigateToVideo(navController, video.id)
+            Spacer(modifier = Modifier.height(16.dp))
+
+            // Change Row to Column to stack buttons vertically
+            Column(
+                horizontalAlignment = Alignment.CenterHorizontally,
+                verticalArrangement = Arrangement.spacedBy(8.dp) // Space between buttons
+            ) {
+                Button(onClick = {
+                    Log.d("VideoCard", "Watching video ${video.name} at 1080p: ${video.link1080p}")
+                    // Add logic to open the video in 1080p
+                }) {
+                    Text(text = "1080p")
                 }
-            )
-        }
 
-
-        item{
-            Column{
-                Spacer(modifier = Modifier.weight(1f))
-                BottomNavigationBar(navController, modifier = Modifier)
+                Button(onClick = {
+                    Log.d("VideoCard", "Watching video ${video.name} at 360p: ${video.link360p}")
+                    // Add logic to open the video in 360p
+                }) {
+                    Text(text = "360p")
+                }
             }
         }
-
     }
 }
 
 
 @Preview
 @Composable
-fun HomePreview(){
+fun HomePreview() {
     AppTheme {
         HomeScreen(rememberNavController(), viewModel())
     }

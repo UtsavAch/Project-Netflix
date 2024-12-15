@@ -32,6 +32,13 @@ interface ApiService {
     @DELETE("users/{id}")
     fun deleteUserById(@Path("id") userId: Int): Call<ResponseBody>
 
+    @PUT("users/update-password")
+    fun updatePassword(
+        @Query("email") email: String,
+        @Query("oldPassword") oldPassword: String,
+        @Query("newPassword") newPassword: String
+    ): Call<ResponseBody>
+
     @GET("videos/all")
     fun getAllVideos(): Call<List<Video>>
 }

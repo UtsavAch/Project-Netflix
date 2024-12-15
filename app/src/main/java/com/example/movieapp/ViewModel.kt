@@ -231,4 +231,36 @@ class AppViewModel : ViewModel() {
             Log.d("AppViewModel", "Movies after deletion: ${_videoList.value}") // Log to see the updated list
         }
     }*/
+
+    fun updatePassword(
+        email: String,
+        oldPassword: String,
+        newPassword: String,
+        onSuccess: () -> Unit,
+        onFailure: (String) -> Unit
+    ) {
+        val apiService = RetrofitInstance.retrofit.create(ApiService::class.java)
+
+        // Make the API call to update the password
+        apiService.updatePassword(email, oldPassword, newPassword).enqueue(object : Callback<ResponseBody> {
+            override fun onResponse(call: Call<ResponseBody>, response: Response<ResponseBody>) {
+                if (response.isSuccessful && response.body() != null) {
+                    val successMessage = response.body()?.string() ?: "Password updated successfully"
+                    Log.d("AppViewModel", "Password updated: $successMessage")
+                    onSuccess()
+                } else {
+                    val errorMessage = response.errorBody()?.string() ?: "Failed to update password"
+                    Log.e("AppViewModel", "Error updating password: $errorMessage")
+                    onFailure(errorMessage)
+                }
+            }
+
+            override fun onFailure(call: Call<ResponseBody>, t: Throwable) {
+                val errorMessage = t.message ?: "An unexpected error occurred"
+                Log.e("AppViewModel", "Error updating password: $errorMessage")
+                onFailure(errorMessage)
+            }
+        })
+    }
+
 }
