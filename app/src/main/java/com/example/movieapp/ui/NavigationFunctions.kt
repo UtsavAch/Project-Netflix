@@ -19,11 +19,6 @@ fun navigateToHome(navController: NavController) {
     navController.navigate(Routes.home)
 }
 
-// Function to navigate to the Trending screen
-fun navigateToTrending(navController: NavController) {
-    navController.navigate(Routes.trending)
-}
-
 // Function to navigate to the Profile screen
 fun navigateToProfile(navController: NavController) {
     navController.navigate(Routes.profile)
