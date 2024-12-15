@@ -142,6 +142,9 @@ class AppViewModel : ViewModel() {
         })
     }
 
+    fun getVideoById(id: Int): Video? {
+        return videoList.value.find{ it.id == id}
+    }
 
     private fun loadVideos() {
         val apiService = RetrofitInstance.retrofit.create(ApiService::class.java)

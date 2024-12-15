@@ -5,4 +5,5 @@ object Routes {
     var signup = "signup-screen"
     var home = "home-screen"
     var profile = "profile-screen"
+    var video = "video/{videoId}"
 }

@@ -20,6 +20,7 @@ import com.example.movieapp.ui.HomeScreen
 import com.example.movieapp.ui.LoginScreen
 import com.example.movieapp.ui.ProfileScreen
 import com.example.movieapp.ui.SignupScreen
+import com.example.movieapp.ui.VideoScreen
 
 @Composable
 fun AppNavigations() {
@@ -45,6 +46,13 @@ fun AppNavigations() {
             }
             composable(Routes.profile) {
                 ProfileScreen(navController, modifier = Modifier, viewModel)
+            }
+            composable("video/{videoId}") { backStackEntry ->
+                val videoId = backStackEntry.arguments?.getString("videoId")?.toInt() ?: return@composable
+                val video = viewModel.getVideoById(videoId) // Função para pegar o vídeo pela ID
+                if (video != null) {
+                    VideoScreen(video = video, navController, viewModel)
+                }
             }
         }
     }

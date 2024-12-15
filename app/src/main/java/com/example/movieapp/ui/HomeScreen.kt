@@ -83,7 +83,7 @@ fun HomeScreen(navController: NavController, viewModel: AppViewModel) {
                     horizontalArrangement = Arrangement.spacedBy(8.dp)
                 ) {
                     videos.forEach { video ->
-                        VideoCard(video = video, onClick = {
+                        VideoCard(navController=navController, video = video, onClick = {
                             // Navigate to detailed screen (simulated)
                             Log.d("HomeScreen", "Navigating to details of: ${video.name}")
                         })
@@ -102,7 +102,7 @@ fun HomeScreen(navController: NavController, viewModel: AppViewModel) {
 
 
 @Composable
-fun VideoCard(video: Video, onClick: () -> Unit) {
+fun VideoCard(navController: NavController, video: Video, onClick: () -> Unit) {
     Card(
         modifier = Modifier
             .width(150.dp)
@@ -135,6 +135,7 @@ fun VideoCard(video: Video, onClick: () -> Unit) {
                 Button(onClick = {
                     Log.d("VideoCard", "Watching video ${video.name} at 1080p: ${video.link1080p}")
                     // Add logic to open the video in 1080p
+                    navigateToVideo(navController, video.id)
                 }) {
                     Text(text = "1080p")
                 }

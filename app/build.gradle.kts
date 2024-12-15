@@ -71,5 +71,8 @@ dependencies {
     implementation("androidx.room:room-runtime:$room_version")
     implementation("androidx.room:room-ktx:$room_version") // for corrotinas
     ksp("androidx.room:room-compiler:$room_version") // code generation with KSP
+
+    implementation("com.google.android.exoplayer:exoplayer:2.19.1") // Core ExoPlayer
+    implementation("com.google.android.exoplayer:exoplayer-hls:2.19.1") // For HLS streaming
 }
 
