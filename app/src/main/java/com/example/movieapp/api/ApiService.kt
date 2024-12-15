@@ -4,6 +4,7 @@ import com.example.movieapp.data.User
 import com.example.movieapp.data.Video
 import okhttp3.ResponseBody
 import retrofit2.Call
+import retrofit2.Response
 import retrofit2.http.*
 
 interface ApiService {
@@ -41,4 +42,7 @@ interface ApiService {
 
     @GET("videos/all")
     fun getAllVideos(): Call<List<Video>>
+
+    @GET("videos/{id}/master")
+    fun getMasterPlaylistUrl(@Path("id") videoId: Int): Call<ResponseBody>
 }

@@ -1,6 +1,7 @@
 package com.example.movieapp
 
 import android.util.Log
+import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.navigation.NavController
@@ -36,6 +37,12 @@ class AppViewModel : ViewModel() {
 
     val userList: StateFlow<List<User>> = _userList
     val videoList: StateFlow<List<Video>> = _videoList
+
+
+
+    private val _masterUrl = MutableStateFlow<String?>(null)
+    val masterUrl: StateFlow<String?> = _masterUrl
+
 
     // Simulate a backend data source
     //private val users = mutableListOf<User>()
@@ -92,6 +99,29 @@ class AppViewModel : ViewModel() {
     }*/
 
 
+    fun fetchMasterUrl(videoId: Int){
+        val apiService = RetrofitInstance.retrofit.create(ApiService::class.java)
+        apiService.getMasterPlaylistUrl(videoId).enqueue(object : Callback<ResponseBody> {
+            override fun onResponse(call: Call<ResponseBody>, response: Response<ResponseBody>) {
+                if (response.isSuccessful && response.body() != null) {
+                    val url = response.body()?.string()
+                    _masterUrl.value = url
+                    Log.d("AppViewModel", "Message: ${response.body()?.string()}")
+                } else {
+                    val error = response.errorBody()?.string() ?: "Failed"
+                    Log.e("AppViewModel", "Failed: $error")
+                }
+            }
+
+            override fun onFailure(call: Call<ResponseBody>, t: Throwable) {
+                val errorMessage = t.message ?: "An unexpected error occurred"
+                Log.e("AppViewModel", "Error: $errorMessage")
+            }
+        })
+    }
+
+
+
     fun getVideoById(id: Int): Video? {
         return videoList.value.find{ it.id == id}
     }
@@ -145,10 +175,6 @@ class AppViewModel : ViewModel() {
                 onFailure(errorMessage)
             }
         })
-    }
-
-    fun getVideoById(id: Int): Video? {
-        return videoList.value.find{ it.id == id}
     }
 
     private fun loadVideos() {

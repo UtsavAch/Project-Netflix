@@ -10,7 +10,11 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
@@ -18,26 +22,39 @@ import androidx.compose.ui.viewinterop.AndroidView
 import androidx.navigation.NavController
 import com.example.movieapp.AppViewModel
 import com.example.movieapp.data.Video
+import com.google.android.exoplayer2.ExoPlaybackException
 import com.google.android.exoplayer2.ExoPlayer
+import com.google.android.exoplayer2.Format
 import com.google.android.exoplayer2.MediaItem
+import com.google.android.exoplayer2.analytics.AnalyticsListener
 import com.google.android.exoplayer2.ui.PlayerView
 import com.google.android.exoplayer2.util.EventLogger
+import java.io.IOException
+import com.google.android.exoplayer2.util.Log;
 
 @Composable
 fun VideoScreen(video: Video, navController: NavController, viewModel: AppViewModel) {
+    val context = LocalContext.current
+    val masterUrl by viewModel.masterUrl.collectAsState()
+
+    // Trigger fetching the master URL when the screen is displayed
+    LaunchedEffect(video.id) {
+        viewModel.fetchMasterUrl(video.id)
+    }
+
+
     Column(
         modifier = Modifier
             .fillMaxSize()
             .padding(16.dp)
     ) {
-        // Display video metadata
-        Text(text = video.name)
-        Text(text = "Genre: ${video.genre}")
+        Text(text = "Video ID: ${video.id}")
+        Text(text = "Streaming Video...")
 
         Spacer(modifier = Modifier.height(16.dp))
 
-        // Pass the master.m3u8 link to the VideoPlayer
-        VideoPlayer(hlsUrl = video.link1080p)
+        // Only show VideoPlayer when the signed URL is ready
+        masterUrl?.let { VideoPlayer(hlsUrl = it) }
     }
 }
 
@@ -45,13 +62,14 @@ fun VideoScreen(video: Video, navController: NavController, viewModel: AppViewMo
 fun VideoPlayer(hlsUrl: String) {
     // Context for ExoPlayer initialization
     val context = LocalContext.current
+    Log.d("VideoPlayer", "HLS URL: $hlsUrl")
+    Log.setLogLevel(Log.LOG_LEVEL_ALL);  // Set log level to VERBOSE
 
     // Create and remember ExoPlayer instance
     val exoPlayer = remember {
         ExoPlayer.Builder(context)
             .build()
             .apply {
-                // Create MediaItem from the master.m3u8 URL
                 val mediaItem = MediaItem.fromUri(hlsUrl)
                 setMediaItem(mediaItem)
                 prepare()
@@ -80,5 +98,4 @@ fun VideoPlayer(hlsUrl: String) {
             .aspectRatio(16 / 9f) // Use 16:9 aspect ratio for video player
     )
 }
-
 
