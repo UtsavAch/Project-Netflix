@@ -47,11 +47,13 @@ fun AppNavigations() {
             composable(Routes.profile) {
                 ProfileScreen(navController, modifier = Modifier, viewModel)
             }
-            composable("video/{videoId}") { backStackEntry ->
+            composable(Routes.video) { backStackEntry ->
+                // Extract videoId from the route argument
                 val videoId = backStackEntry.arguments?.getString("videoId")?.toInt() ?: return@composable
-                val video = viewModel.getVideoById(videoId) // Função para pegar o vídeo pela ID
+                val video = viewModel.getVideoById(videoId) // Retrieve the video based on the ID
                 if (video != null) {
-                    VideoScreen(video = video, navController, viewModel)
+                    // Pass the video object to VideoScreen
+                    VideoScreen(video = video, navController = navController, viewModel = viewModel)
                 }
             }
         }

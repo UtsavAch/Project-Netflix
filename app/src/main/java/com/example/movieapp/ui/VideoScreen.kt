@@ -25,6 +25,30 @@ import com.google.android.exoplayer2.util.EventLogger
 
 @Composable
 fun VideoScreen(video: Video, navController: NavController, viewModel: AppViewModel) {
+    val context = LocalContext.current
+
+    // Create and remember ExoPlayer instance
+    val exoPlayer = remember {
+        ExoPlayer.Builder(context)
+            .build()
+            .apply {
+                // Create MediaItem from the master.m3u8 URL
+                val mediaItem = MediaItem.fromUri(video.link1080p)
+                setMediaItem(mediaItem)
+                prepare()
+                addAnalyticsListener(EventLogger())
+                playWhenReady = true // Auto-play video when ready
+            }
+    }
+
+    // Ensure the ExoPlayer is properly released when the Composable is removed
+    DisposableEffect(navController) {
+        // Release ExoPlayer when the screen is no longer visible (on navigation)
+        onDispose {
+            exoPlayer.release()
+        }
+    }
+
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -37,36 +61,16 @@ fun VideoScreen(video: Video, navController: NavController, viewModel: AppViewMo
         Spacer(modifier = Modifier.height(16.dp))
 
         // Pass the master.m3u8 link to the VideoPlayer
-        VideoPlayer(hlsUrl = video.link1080p)
+        VideoPlayer(exoPlayer = exoPlayer)
+
+        // Add the BottomNavigationBar to the video screen
+        Spacer(modifier = Modifier.weight(1f)) // Add flexible space to push the bar to the bottom
+        BottomNavigationBar(navController, modifier = Modifier)
     }
 }
 
 @Composable
-fun VideoPlayer(hlsUrl: String) {
-    // Context for ExoPlayer initialization
-    val context = LocalContext.current
-
-    // Create and remember ExoPlayer instance
-    val exoPlayer = remember {
-        ExoPlayer.Builder(context)
-            .build()
-            .apply {
-                // Create MediaItem from the master.m3u8 URL
-                val mediaItem = MediaItem.fromUri(hlsUrl)
-                setMediaItem(mediaItem)
-                prepare()
-                addAnalyticsListener(EventLogger())
-                playWhenReady = true // Auto-play video when ready
-            }
-    }
-
-    // Ensure the ExoPlayer is properly released when the Composable is removed
-    DisposableEffect(exoPlayer) {
-        onDispose {
-            exoPlayer.release()
-        }
-    }
-
+fun VideoPlayer(exoPlayer: ExoPlayer) {
     // Create and bind PlayerView to ExoPlayer using AndroidView
     AndroidView(
         factory = { context ->
@@ -80,5 +84,3 @@ fun VideoPlayer(hlsUrl: String) {
             .aspectRatio(16 / 9f) // Use 16:9 aspect ratio for video player
     )
 }
-
-
