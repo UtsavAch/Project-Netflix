@@ -41,7 +41,7 @@ fun AppNavigations() {
                 SignupScreen(navController, viewModel)
             }
             composable(Routes.home) {
-                HomeScreen(navController)
+                HomeScreen(navController, viewModel)
             }
             composable(Routes.profile) {
                 ProfileScreen(navController, modifier = Modifier, viewModel)

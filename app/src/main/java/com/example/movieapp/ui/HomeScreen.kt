@@ -18,12 +18,13 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
+import com.example.movieapp.AppViewModel
 import com.example.movieapp.R
 import com.example.movieapp.ui.theme.AppTheme
 import com.example.movieapp.data.Video
 
 @Composable
-fun HomeScreen(navController: NavController) {
+fun HomeScreen(navController: NavController, viewModel: AppViewModel) {
     // Intercepts going back behavior
     BackHandler {
         Log.d("HomeScreen", "Button going back HomeScreen.")
@@ -31,23 +32,11 @@ fun HomeScreen(navController: NavController) {
 
     var searchQuery by remember { mutableStateOf("") }
 
-    // Simulated video list
-    val allVideos = listOf(
-        Video(1, "Inception", "Sci-Fi", 148, "link1080p", "link360p"),
-        Video(2, "The Dark Knight", "Action", 152, "link1080p", "link360p"),
-        Video(3, "Interstellar", "Sci-Fi", 169, "link1080p", "link360p"),
-        Video(4, "Dunkirk", "War", 106, "link1080p", "link360p"),
-        Video(5, "Tenet", "Sci-Fi", 150, "link1080p", "link360p"),
-        Video(6, "Tenet", "Sci-Fi", 150, "link1080p", "link360p"),
-        Video(7, "Tenet", "Sci-Fi", 150, "link1080p", "link360p"),
-        Video(8, "The Dark Knight", "Action", 152, "link1080p", "link360p"),
-        Video(9, "The Dark Knight", "Action", 152, "link1080p", "link360p"),
-        Video(10, "The Dark Knight", "Action", 152, "link1080p", "link360p"),
-        Video(11, "Dunkirk", "War", 106, "link1080p", "link360p"),
-    )
+    // Collect video list from ViewModel
+    val videoList by viewModel.videoList.collectAsState(initial = emptyList())
 
     // Filter videos based on the search query
-    val filteredVideos = allVideos.filter {
+    val filteredVideos = videoList.filter {
         it.name.contains(searchQuery, ignoreCase = true)
     }
 
@@ -74,36 +63,41 @@ fun HomeScreen(navController: NavController) {
         Spacer(modifier = Modifier.height(20.dp))
 
         // Display videos by genre
-        videosByGenre.forEach { (genre, videos) ->
-            Text(
-                text = genre,
-                fontWeight = FontWeight.Bold,
-                style = MaterialTheme.typography.bodyLarge, // Updated text style
-                modifier = Modifier.padding(bottom = 8.dp)
-            )
+        if (videoList.isEmpty()) {
+            Text(text = "Loading videos...", style = MaterialTheme.typography.bodyMedium)
+        } else {
+            videosByGenre.forEach { (genre, videos) ->
+                Text(
+                    text = genre,
+                    fontWeight = FontWeight.Bold,
+                    style = MaterialTheme.typography.bodyLarge, // Updated text style
+                    modifier = Modifier.padding(bottom = 8.dp)
+                )
 
-            // Horizontal scrollable row for videos of a specific genre
-            Row(
-                modifier = Modifier
-                    .horizontalScroll(rememberScrollState())
-                    .fillMaxWidth(),
-                horizontalArrangement = Arrangement.spacedBy(8.dp)
-            ) {
-                videos.forEach { video ->
-                    VideoCard(video = video, onClick = {
-                        // Navigate to detailed screen (simulated)
-                        Log.d("HomeScreen", "Navigating to details of: ${video.name}")
-                    })
+                // Horizontal scrollable row for videos of a specific genre
+                Row(
+                    modifier = Modifier
+                        .horizontalScroll(rememberScrollState())
+                        .fillMaxWidth(),
+                    horizontalArrangement = Arrangement.spacedBy(8.dp)
+                ) {
+                    videos.forEach { video ->
+                        VideoCard(video = video, onClick = {
+                            // Navigate to detailed screen (simulated)
+                            Log.d("HomeScreen", "Navigating to details of: ${video.name}")
+                        })
+                    }
                 }
-            }
 
-            Spacer(modifier = Modifier.height(20.dp)) // Add space between genre sections
+                Spacer(modifier = Modifier.height(20.dp)) // Add space between genre sections
+            }
         }
 
         Spacer(modifier = Modifier.weight(1f))
         BottomNavigationBar(navController, modifier = Modifier)
     }
 }
+
 
 
 @Composable
@@ -155,10 +149,11 @@ fun VideoCard(video: Video, onClick: () -> Unit) {
     }
 }
 
+/*
 @Preview
 @Composable
 fun HomePreview() {
     AppTheme {
         HomeScreen(rememberNavController())
     }
-}
+}*/
